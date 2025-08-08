@@ -1,0 +1,22 @@
+[package]
+name = "fast-cjson"
+edition = "2024"
+version = "0.1.0"
+
+[[bench]]
+name = "bench"
+harness = false
+
+[dependencies]
+either = "1.15.0"
+icu_normalizer = { version = "2.0.0", default-features = false, features = ["compiled_data"] }
+memchr = "2.7.5"
+serde = "1.0.219"
+serde_json = "1.0.142"
+
+[dev-dependencies]
+divan = "0.1.21"
+mimalloc = "0.1.47"
+olpc-cjson = "0.1.4"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = { version = "1.0.142", features = ["raw_value"] }

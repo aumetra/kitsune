@@ -1,21 +1,25 @@
 use crate::{Manifest, SECTION_NAME};
+use quick_error::quick_error;
 use std::{io, ops::Range};
-use thiserror::Error;
 use wasmparser::Payload;
 
 /// Type specifying the range of a section
 pub type SectionRange = Range<usize>;
 
-/// Error while decoding the manifest from a WASM module
-#[derive(Debug, Error)]
-pub enum DecodeError {
-    /// Parsing of the JSON manifest failed
-    #[error(transparent)]
-    Parse(#[from] sonic_rs::Error),
+quick_error! {
+    /// Error while decoding the manifest from a WASM module
+    #[derive(Debug)]
+    pub enum DecodeError {
+        /// Parsing of the JSON manifest failed
+        Parse(err: serde_json::Error) {
+            from()
+        }
 
-    /// Parsing of the WASM component failed
-    #[error(transparent)]
-    WarmParse(#[from] wasmparser::BinaryReaderError),
+        /// Parsing of the WASM component failed
+        WarmParse(err: wasmparser::BinaryReaderError) {
+            from()
+        }
+    }
 }
 
 /// Decode a manifest from a WASM module
@@ -43,7 +47,7 @@ pub fn decode(module: &[u8]) -> Result<Option<(Manifest<'_>, SectionRange)>, Dec
     let mut section_range = payload.range();
     section_range.start -= start_offset;
 
-    let manifest = sonic_rs::from_slice(payload.data())?;
+    let manifest = serde_json::from_slice(payload.data())?;
 
     Ok(Some((manifest, section_range)))
 }
