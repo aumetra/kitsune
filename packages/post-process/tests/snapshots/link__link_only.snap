@@ -1,0 +1,14 @@
+---
+source: lib/post-process/tests/link.rs
+expression: parse_to_test_output(&link)
+input_file: lib/post-process/tests/input/link/only_link_1
+---
+[
+    (
+        Link(
+            "https://upload.wikimedia.org/wikipedia/en/3/3b/GoroMajimafive.jpg",
+        ),
+        0..65,
+        "https://upload.wikimedia.org/wikipedia/en/3/3b/GoroMajimafive.jpg",
+    ),
+]

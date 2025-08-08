@@ -1,0 +1,14 @@
+[package]
+name = "mrf-manifest"
+edition = "2024"
+version = "0.1.0"
+
+[dependencies]
+
+[dev-dependencies]
+
+
+[features]
+#decode = ["dep:leb128", "dep:sonic-rs", "dep:thiserror", "dep:wasmparser"]
+#encode = ["dep:wasm-encoder", "serialise"]
+#serialise = ["dep:fast-cjson", "dep:sonic-rs"]

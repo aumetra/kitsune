@@ -1,0 +1,18 @@
+[package]
+name = "post-process"
+version = "0.1.0"
+edition = "2024"
+
+[[bench]]
+name = "simple"
+harness = false
+
+[dependencies]
+logos = "0.15.1"
+
+
+[dev-dependencies]
+divan = "0.1.21"
+futures-executor = "0.3.31"
+insta = { version = "1.43.1", features = ["glob"] }
+pretty_assertions = "1.4.1"

@@ -1,0 +1,19 @@
+---
+source: lib/post-process/tests/mention.rs
+expression: parse_to_test_output(&mention)
+input_file: lib/post-process/tests/input/mention/subdomain_1
+---
+[
+    (
+        Mention(
+            (
+                "test",
+                Some(
+                    "social.hello.world",
+                ),
+            ),
+        ),
+        0..24,
+        "@test@social.hello.world",
+    ),
+]

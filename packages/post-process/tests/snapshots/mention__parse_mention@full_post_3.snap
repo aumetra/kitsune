@@ -1,0 +1,29 @@
+---
+source: lib/post-process/tests/mention.rs
+expression: parse_to_test_output(&post)
+input_file: lib/post-process/tests/input/mention/full_post_3
+---
+[
+    (
+        Mention(
+            (
+                "majima",
+                Some(
+                    "go.ro",
+                ),
+            ),
+        ),
+        43..56,
+        "@majima@go.ro",
+    ),
+    (
+        Mention(
+            (
+                "saejima",
+                None,
+            ),
+        ),
+        59..67,
+        "@saejima",
+    ),
+]

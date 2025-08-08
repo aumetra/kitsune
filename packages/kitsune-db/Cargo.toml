@@ -1,0 +1,15 @@
+[package]
+name = "kitsune-db"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+async-trait = "0.1.88"
+diesel = { version = "2.2.12", default-features = false }
+diesel-async = { version = "0.6.1", features = ["bb8"] }
+frunk = "0.4.4"
+frunk_core = "0.4.4"
+quick-error = "2.0.1"
+static_assertions = "1.1.0"
+time = "0.3.41"
+uuid = "1.17.0"

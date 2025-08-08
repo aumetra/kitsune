@@ -1,0 +1,6 @@
+---
+source: lib/post-process/tests/mention.rs
+expression: parse_to_test_output(&mention)
+input_file: lib/post-process/tests/input/mention/invalid_1
+---
+[]

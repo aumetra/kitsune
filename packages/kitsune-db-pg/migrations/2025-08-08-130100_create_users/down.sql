@@ -1,0 +1,2 @@
+DROP TABLE users;
+DROP SCHEMA kitsune CASCADE;

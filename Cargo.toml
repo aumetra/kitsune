@@ -4,12 +4,34 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-actix-web = { version = "4.11.0", default-features = false, features = ["compress-brotli", "compress-gzip", "cookies", "macros"] }
+apalis = { version = "0.7.2", features = ["catch-panic", "limit", "retry"] }
+argon2 = { version = "0.5.3", features = ["std"] }
 async-graphql = { version = "7.0.17", default-features = false }
-async-graphql-actix-web = "7.0.17"
+async-graphql-axum = "7.0.17"
+axum = { version = "0.8.4", features = ["macros"] }
+bon = "3.6.5"
+clap = { version = "4.5.43", features = ["derive"] }
 color-eyre = "0.6.5"
 eyre = "0.6.12"
+garde = { version = "0.22.0", features = ["derive", "email", "regex"] }
+kitsune-db = { path = "packages/kitsune-db" }
+kitsune-db-pg = { path = "packages/kitsune-db-pg" }
+quick-error = "2.0.1"
+rand = "=0.8.5"
+serde = { version = "1.0.219", features = ["derive"] }
 tokio = { version = "1.47.1", features = ["full"] }
+toml = "0.9.5"
+tower-http = { version = "0.6.6", features = ["cors", "fs", "request-id"] }
 tracing = "0.1.41"
 tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+uuid = { version = "1.17.0", features = ["fast-rng", "serde", "v7"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"
+strip = true
+
+[workspace]
+members = ["packages/*"]

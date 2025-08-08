@@ -1,0 +1,6 @@
+---
+source: lib/post-process/tests/hashtag.rs
+expression: parse_to_test_output(&hashtag)
+input_file: lib/post-process/tests/input/hashtag/invalid_1
+---
+[]

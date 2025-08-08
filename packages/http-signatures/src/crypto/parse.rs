@@ -1,0 +1,126 @@
+//!
+//! Parse cryptographic keys for use in the HTTP signature implementations
+//!
+
+use super::SigningKey as SigningKeyTrait;
+use const_oid::db::{rfc5912::RSA_ENCRYPTION, rfc8410::ID_ED_25519};
+use miette::Diagnostic;
+use pkcs8::{
+    DecodePrivateKey, Document, PrivateKeyInfoRef, SecretDocument, SubjectPublicKeyInfoRef,
+    der::{Decode, asn1::BitStringRef},
+};
+use quick_error::quick_error;
+use ring::signature::{
+    ED25519, Ed25519KeyPair, RSA_PKCS1_2048_8192_SHA256, RsaKeyPair, UnparsedPublicKey,
+    VerificationAlgorithm,
+};
+
+quick_error! {
+    /// Key parsing error
+    #[derive(Debug, Diagnostic)]
+    pub enum Error {
+        /// Malformed DER structure
+        Der(err: pkcs8::der::Error) {
+            from()
+        }
+
+        /// Key rejected
+        KeyRejected(err: ring::error::KeyRejected) {
+            from()
+        }
+
+        /// Malformed key
+        MalformedKey {}
+
+        /// Malformed PKCS#8 document
+        Pkcs8(err: pkcs8::Error) {
+            from()
+        }
+
+        /// Unknown key type
+        UnknownKeyType {}
+    }
+}
+
+/// Parse a public key from its PKCS#8 DER form
+///
+/// Currently supported algorithms:
+///
+/// - RSA
+/// - Ed25519
+#[inline]
+pub fn public_key(der: &[u8]) -> Result<UnparsedPublicKey<Vec<u8>>, Error> {
+    let document = Document::from_der(der)?;
+    let spki: SubjectPublicKeyInfoRef<'_> = document.decode_msg()?;
+
+    let verify_algo: &dyn VerificationAlgorithm = if spki.algorithm.oid == RSA_ENCRYPTION {
+        &RSA_PKCS1_2048_8192_SHA256
+    } else if spki.algorithm.oid == ID_ED_25519 {
+        &ED25519
+    } else {
+        return Err(Error::UnknownKeyType);
+    };
+
+    let raw_bytes = spki
+        .subject_public_key
+        .as_bytes()
+        .ok_or(Error::MalformedKey)?
+        .to_vec();
+
+    Ok(UnparsedPublicKey::new(verify_algo, raw_bytes))
+}
+
+/// Enum dispatch over various signing keys
+#[non_exhaustive]
+pub enum SigningKey {
+    /// Ed25519
+    Ed25519(Ed25519KeyPair),
+
+    /// RSA
+    Rsa(RsaKeyPair),
+}
+
+impl SigningKeyTrait for SigningKey {
+    type Output = Vec<u8>;
+
+    fn sign(&self, msg: &[u8]) -> Self::Output {
+        match self {
+            Self::Ed25519(key) => key.sign(msg).as_ref().to_vec(),
+            Self::Rsa(key) => SigningKeyTrait::sign(key, msg),
+        }
+    }
+}
+
+/// Parse a private key from its PKCS#8 DER form.
+/// This function uses constant-time decoding and zeroizes any temporary allocations, following good cryptographic hygiene practices.
+///
+/// When working with this library, prefer using this function over your own decoding logic.
+///
+/// Currently supported algorithms:
+///
+/// - RSA
+/// - Ed25519
+#[inline]
+pub fn private_key(der: &[u8]) -> Result<SigningKey, Error> {
+    let document = SecretDocument::from_pkcs8_der(der)?;
+    let private_key_raw: PrivateKeyInfoRef<'_> = document.decode_msg()?;
+
+    let signing_key = if private_key_raw.algorithm.oid == RSA_ENCRYPTION {
+        SigningKey::Rsa(RsaKeyPair::from_der(
+            private_key_raw.private_key.as_bytes(),
+        )?)
+    } else if private_key_raw.algorithm.oid == ID_ED_25519 {
+        SigningKey::Ed25519(Ed25519KeyPair::from_seed_and_public_key(
+            private_key_raw.private_key.as_bytes(),
+            private_key_raw
+                .public_key
+                .as_ref()
+                .and_then(BitStringRef::as_bytes)
+                .ok_or(Error::MalformedKey)?,
+        )?)
+    } else {
+        return Err(Error::UnknownKeyType);
+    };
+
+    Ok(signing_key)
+}

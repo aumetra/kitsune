@@ -1,0 +1,9 @@
+[package]
+name = "mrf-tool"
+description = "Tool for preparing and introspecting WASM MRFs"
+edition = "2024"
+version = "0.1.0"
+
+[dependencies]
+
+[dev-dependencies]

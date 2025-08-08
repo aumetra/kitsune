@@ -1,0 +1,22 @@
+[package]
+name = "kitsune-db-pg"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+async-trait = "0.1.88"
+bon = "3.6.5"
+diesel = { version = "2.2.12", features = ["postgres_backend", "time", "uuid"] }
+diesel-async = { version = "0.6.1", features = [
+    "async-connection-wrapper",
+    "bb8",
+    "postgres",
+] }
+diesel_migrations = { version = "2.2.0", features = ["postgres"] }
+eyre = "0.6.12"
+frunk = "0.4.4"
+frunk_core = "0.4.4"
+kitsune-db = { path = "../kitsune-db" }
+time = "0.3.41"
+tokio = { version = "1.47.1", features = ["rt"] }
+uuid = "1.17.0"

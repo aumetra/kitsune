@@ -1,0 +1,39 @@
+[package]
+name = "http-signatures"
+edition = "2024"
+version = "0.1.0"
+
+[[bench]]
+name = "build_cavage_signature_string"
+harness = false
+
+[[bench]]
+name = "parse_cavage_header"
+harness = false
+
+[dependencies]
+base64 = "0.22.1"
+blowocking = { path = "../blowocking", optional = true }
+const-oid = { version = "0.10.1", features = ["db"] }
+derive_builder = "0.20.2"
+http = "1.3.1"
+httpdate = "1.0.3"
+itertools = "0.14.0"
+lexical-parse-integer = "1.0.5"
+logos = "0.15.1"
+miette = "7.6.0"
+pkcs8 = { version = "0.11.0-rc.6", features = ["pem", "std"] }
+quick-error = "2.0.1"
+ring = { version = "0.17.14", features = ["std"] }
+scoped-futures = "0.1.4"
+thiserror = "2.0.12"
+tick-tock-mock = { path = "../tick-tock-mock" }
+tracing = { version = "0.1.41", optional = true }
+
+[dev-dependencies]
+divan = "0.1.21"
+tokio = { version = "1.47.1", features = ["macros"] }
+
+[features]
+default = ["easy"]
+easy = ["dep:blowocking", "dep:tracing"]

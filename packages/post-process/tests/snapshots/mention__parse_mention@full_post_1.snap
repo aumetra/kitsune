@@ -1,0 +1,29 @@
+---
+source: lib/post-process/tests/mention.rs
+expression: parse_to_test_output(&post)
+input_file: lib/post-process/tests/input/mention/full_post_1
+---
+[
+    (
+        Mention(
+            (
+                "桐生",
+                Some(
+                    "friday.night",
+                ),
+            ),
+        ),
+        6..26,
+        "@桐生@friday.night",
+    ),
+    (
+        Mention(
+            (
+                "真島",
+                None,
+            ),
+        ),
+        27..34,
+        "@真島",
+    ),
+]
