@@ -19,4 +19,8 @@ frunk_core = "0.4.4"
 kitsune-db = { path = "../kitsune-db" }
 time = "0.3.41"
 tokio = { version = "1.47.1", features = ["rt"] }
+tracing = "0.1.41"
 uuid = "1.17.0"
+
+[lints]
+workspace = true

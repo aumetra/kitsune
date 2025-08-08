@@ -37,3 +37,6 @@ tokio = { version = "1.47.1", features = ["macros"] }
 [features]
 default = ["easy"]
 easy = ["dep:blowocking", "dep:tracing"]
+
+[lints]
+workspace = true

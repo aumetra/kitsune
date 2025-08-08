@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate tracing;
+
 use diesel::Connection;
 use diesel_async::{
     AsyncPgConnection,

@@ -37,11 +37,12 @@ pub struct Repository {
 
 #[async_trait]
 impl UserRepository for Repository {
+    #[cfg_attr(not(coverage), instrument(skip_all, fields(id = %user.id, username = %user.username)))]
     async fn create(
         &self,
         user: kitsune_db::NewUser<'_>,
     ) -> Result<kitsune_db::User, kitsune_db::Error> {
-        let insertable: NewUser = user.transmogrify();
+        let insertable: NewUser<'_> = user.transmogrify();
 
         let mut conn = self.pool.get().await?;
         let user = diesel::insert_into(users::table)
@@ -53,6 +54,7 @@ impl UserRepository for Repository {
         Ok(user.transmogrify())
     }
 
+    #[cfg_attr(not(coverage), instrument(skip(self)))]
     async fn find_by_id(&self, id: Uuid) -> Result<Option<kitsune_db::User>, kitsune_db::Error> {
         let mut conn = self.pool.get().await?;
         let maybe_user = users::table
@@ -65,6 +67,7 @@ impl UserRepository for Repository {
         Ok(maybe_user.map(Transmogrifier::transmogrify))
     }
 
+    #[cfg_attr(not(coverage), instrument(skip(self)))]
     async fn find_by_username(
         &self,
         username: &str,
@@ -80,6 +83,7 @@ impl UserRepository for Repository {
         Ok(maybe_user.map(Transmogrifier::transmogrify))
     }
 
+    #[cfg_attr(not(coverage), instrument(skip(self)))]
     async fn delete_by_id(&self, id: Uuid) -> Result<(), kitsune_db::Error> {
         let mut conn = self.pool.get().await?;
         diesel::delete(users::table.find(id))
@@ -92,10 +96,9 @@ impl UserRepository for Repository {
 
 #[cfg(test)]
 mod test {
-    use std::env;
-
     use super::Repository;
     use kitsune_db::{NewUser, UserRepository};
+    use std::env;
     use uuid::Uuid;
 
     async fn connect() -> impl UserRepository {

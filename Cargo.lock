@@ -1645,6 +1645,7 @@ dependencies = [
  "kitsune-db",
  "time",
  "tokio",
+ "tracing",
  "uuid",
 ]
 

@@ -8,3 +8,6 @@ clap = { version = "4.5.43", features = ["derive"] }
 http-signatures = { version = "0.1.0", path = "../http-signatures" }
 miette = { version = "7.6.0", features = ["fancy"] }
 owo-colors = { version = "4.2.2", features = ["supports-colors"] }
+
+[lints]
+workspace = true

@@ -66,6 +66,7 @@ pub struct NewUser {
 }
 
 impl Service {
+    #[cfg_attr(not(coverage), instrument(skip_all, fields(username = %new_user.username)))]
     pub async fn register(&self, new_user: NewUser) -> Result<(), Error> {
         new_user.validate_with(&NewUserContext {
             allow_non_ascii: self.allow_non_ascii,
